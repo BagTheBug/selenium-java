@@ -1,7 +1,16 @@
 package com.fb.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -37,5 +46,20 @@ public class Utils {
 		JavascriptExecutor executor = (JavascriptExecutor) driver;
 		executor.executeScript("arguments[0].click();", element);
 		element.click();
+	}
+
+	public static void screenShot(WebDriver driver) throws IOException {
+		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(srcFile, new File(screenShotName()));
+	}
+
+	public static String screenShotName() throws IOException {
+		String fileName = null;
+		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		Date dateobj = new Date();
+		fileName = df.format(dateobj).replace("\\s", "_").replaceAll("/", "-");
+		fileName = fileName.replaceAll(":", "_") + ".jpg";
+		fileName = ReadPropertiesFile.getPropValue("ScreenshotPath") + fileName;
+		return fileName;
 	}
 }
